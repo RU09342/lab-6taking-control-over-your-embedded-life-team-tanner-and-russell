@@ -35,4 +35,4 @@ The MOSFET acted very differently. The MOSFET switch never really stopped workin
 
 The highs and lows of the voltage across the resistor can still be seen very clearly. As the frequency of the input is increased, the input and output become more and more distorted but still remain high and low. Overall, the MOSFET has a higher max switching speed compared to the relay by far.
 
-AS for current draw of each switching system, they both were found to be extremely low. It is common Electronics knowledge that there is no current draw through the gate of a MOSFET. This allows a user to use their microprocessor freely without worry of drawing too much pin current and frying their processor.
+As for current draw of each switching system, they both were found to be extremely low. It is common Electronics knowledge that there is no current draw through the gate of a MOSFET. This allows a user to use their microprocessor freely without worry of drawing too much pin current and frying their processor.
