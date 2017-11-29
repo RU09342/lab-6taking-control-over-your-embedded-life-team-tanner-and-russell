@@ -1,10 +1,5 @@
 #include <msp430f5529.h>
 
-
-/**
- * main.c
- */
-
 void setUpPWM();
 void OutputInit();
 
@@ -14,6 +9,11 @@ void OutputSet(int voltage);
 void CreateTriangleWaves();
 void CreateStepFunction();
 
+/**
+* This code produces triangle and square waves for use in comparing the two DACs with the function generator.
+* @author Russell Binaco and Tanner Smith
+* 
+**/
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;	    // Stop watchdog timer
@@ -27,6 +27,11 @@ int main(void)
 	return 0;
 }
 
+/**
+* CreateStepFunction simply uses a delay to produce square waves rather than triangle waves from the 
+* CreateTriangleWavesFunction below by adding a delay at each step.
+* 
+**/
 void CreateStepFunction(){
     int i = 0;                      // Index for counter
     int i2 = 0;
@@ -45,6 +50,11 @@ void CreateStepFunction(){
     }
 }
 
+/**
+* CreateTriangleWaves uses both R2R ladder and PWM DAC to produce triangle waves.
+* This is done by looping forward and backwards through the 8-bit values for each DAC.
+* 
+**/
 void CreateTriangleWaves(){
 
     int i = 0;                      // Index for counter
@@ -61,16 +71,25 @@ void CreateTriangleWaves(){
     }
 }
 
+/**
+* The PWM is configured on P1.2 with a CCR0 value of 1000 (1KHz frequency)
+* Duty cycle is initialized to 500.
+* 
+**/
 void setUpPWM(){
-    P1DIR |= BIT2;                            // P1.6 output
-    P1SEL |= BIT2;                            // P1.6 for TA0 CCR1 Output Capture
-    //P1SEL2 = 0;                               // Select default function for P1.6 (see table 19 in general datasheet)
+    P1DIR |= BIT2;                            // P1.2 output
+    P1SEL |= BIT2;                            // P1.2 for TA0 CCR1 Output Capture
     TA0CCR0 = 1000;                             // PWM Freq=1000Hz
     TA0CCTL1 = OUTMOD_7;                         // CCR1 reset/set: set on at CCR0, off at CCR1 capture (see table 12-2 in specific datasheet)
     TA0CCR1 = 500;                               // CCR1 50% PWM duty cycle
     TA0CTL = TASSEL_2 + MC_1;                  // SMCLK, up mode, 1MhZ
 }
 
+/**
+* setPWM8bit converts an 8-bit input value to a PWM operating from a CCR0 value of 1000.
+* @param the 8-bit duty cycle
+* 
+**/
 void setPWM8bit(unsigned int bitDuty){
     if(bitDuty>255){
         bitDuty = 255;
@@ -80,6 +99,10 @@ void setPWM8bit(unsigned int bitDuty){
     TA0CCR1 = bitDuty;
 }
 
+/**
+* OutputInit initializes the 8 pins used as outputs for the DAC.
+*
+**/
 void OutputInit(){
 
        P6DIR |= BIT0 + BIT1 + BIT2 + BIT3 + BIT4;
@@ -88,6 +111,11 @@ void OutputInit(){
 
 }
 
+/**
+* OutputSet sets the "switches" of the R2R ladder from an 8-bit UART input
+* @param the value from the RX buffer.
+*
+**/
 void OutputSet(int values){
 
     int bit0 = values & BIT0;
