@@ -1,38 +1,48 @@
-# Lab 6: "High Power" Control
+# Tanner Smith and Russell Binaco Lab 6
 
-Microprocessors are one of the most powerful electrical tools in today's world. However, all powerful tools have their limitations. For microprocessors, the limitation is their power input and output. There is a limit to how many amps a single pin can output. This is where switches become a powerful tool. Switches are able to pass high power through its body while also being controlled by a smaller signal. The two switches observed in this lab were relays and MOSFETs.
+## High Power Control Switching
 
-## Software
+Microprocessors are one of the most powerful electrical tools in today's world. However, all powerful tools have their limitations. For microprocessors, the limitation is its power input and output. There is a limit to how many amps a single pin can output. This is where switches become a powerful tool. Switches are able to pass high power through its body while also being controlled by a smaller signal. The two switches observed in this lab were relays and MOSFETs.
 
-The software portion of this lab was very simple. A 50% duty cycle, 1 Hz PWM signal was generated using a MSP430G2553. This code was reused from lab 4. The only parameters that were changed were timing registers. This code can be found in the Relay Code folder and was used for moth the relay and MOSFET circuit. 
+### Relays
 
-## Hardware
+In the lab, a 12 V regulated relay was used to switch on and off a 12 V source to a power resistor. When the relay was switched on the power resistor would dissapate all 12 V and heat up while when the relay was switched off, now power was being dissapated through the resistor. The relay was controlled using a GPIO pin on the MSP430G2553. The output was measured on an oscilloscope and can be seen below.
 
-### Relay
+INSERT OSCILLOSCOPE SCREEN SHOT
 
-To observe a relay switch, 12 V regulated relay was used to switch on and off a 12 V source to a power resistor. The relay was connected as follows: the normally closed (NC) terminal was attached to 12 V, the normally open (NO) terminal was attached to ground, and the common terminal was attached to the power resistor which was connected to ground. This made it so the power resistor was normally connected to ground and only connected to power when the relay was switched. The 3.3 V input from the microporcessor controlled the state of the relay. An oscilloscope screenshot was taken to show the relationship between the relay input and the power across the resistor.
+But what would a lab be for Russell Trafford if we didn't try and break something. The speed at which the relay was switched on and off was cranked higher and higher until the relay stopped working. This was easy to tell because you could physically hear the switching in the relay stop. The relay stopped working at BLANK Hz which can be seen in the screenshot below. 
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/High%20Power%20Control/Oscilloscope%20Screen%20Shots/Relay%20Control.png)
+INSERT OSCILLOSCOPE SCREEN SHOT
 
-### MOSFET
+### MOSFETs 
 
-To observe a MOSFET switch, a simple 2N7000 NMOS was used in a low-side switch fashion to dissapate power through a power resistor. The MSP430G2553 GPIO PWM pin was attached to the gate of the NMOS and 12 V was attached to the drain. A power resistor connected to ground was attached to the source of the NMOS. Using the MOSFET in saturation, the NMOS was either fully on or fully off which either allowed all 12 V to be passed through the resistor or no voltage at all. Since an NMOS was used, the power across the resistor will be high when the gate is low and vice versa. An oscilloscope screenshot was taken to show the relationship between the gate input and the power across the resistor.
+In the lab, a simple 2N7000 NMOS was used in the same fashion as the relay: to dissapate power through a resistor. The MSP430G2553 was used again to switch the MOSFET on and off using a GPIO pin. The oscilloscope screenshot for the finished working circuit can be seen below.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/High%20Power%20Control/Oscilloscope%20Screen%20Shots/MOSFET%20Control.png)
+INSERT OSCILLOSCOPE SCREEN SHOT
 
-## Deliverables
+The MOSFET switching speed was also tested in the same way as the relays and the breakage point can be seen in the screenshot below.
 
-What would a lab be for Russell Trafford if we didn't try and break something. To compare and contrast Relay vs MOSFET switches, the maximum switching speed of each system was found by cranking up the PWM frequency until the system stopped working. This would be a pain to do with the MSP430G2553 because the code would have to be changed and reuploaded incrementally until the breaking point is reached. Instead, a function generator was used to input a square wave into each system and easily increase the switching frequency. The relay system broke at 130 Hz which can be seen in the oscilloscope screenshot below.
+INSERT OSCILLOSCOPE SCREEN SHOT
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/High%20Power%20Control/Oscilloscope%20Screen%20Shots/Relay%20Break%20Frequency.png)
+When comparing the different high power control systems, it is obvious the MOSFET is a better switch in terms of switching speed. When switched at high frequencies, the relay physically slammed shut and would not open, while the MOSFET output started to not change fast enough so it became distorted.
 
-The physical switching system of the relay can not keep up with the fast input frequency, so it eventually just remains normally closed. The oscilloscope screenshot above shows that the relay is almost always normall closed. If the frequency was incremented any higher, the relay remained shut and the oscilloscope showed a flatline at zero for the voltage across the resistor.
+## Precision Control 
 
-The MOSFET acted very differently. The MOSFET switch never really stopped working, but instead became very distorted. An oscilloscope screenshot was taken at 200 Hz which shows this distortion.
+In the previous part of the lab, different ways to control high power were analyzed. However, sometimes finer control over how much voltage is being outputted is required. Instead of outputting 0 V or 3.3 V, some specified voltage inbetween can be selected. Two ways to achieve this are a PWM signal or R2R DAC.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/High%20Power%20Control/Oscilloscope%20Screen%20Shots/MOSFET%20Break%20Frequency.png)
+### PWM
 
 
-The highs and lows of the voltage across the resistor can still be seen very clearly. As the frequency of the input is increased, the input and output become more and more distorted but still remain high and low. Overall, the MOSFET has a higher max switching speed compared to the relay by far.
 
-As for current draw of each switching system, they both were found to be extremely low. It is common Electronics knowledge that there is no current draw through the gate of a MOSFET. This allows a user to use their microprocessor freely without worry of drawing too much pin current and frying their processor.
+### R2R DAC
+
+
+
+### Triangle Waves
+
+
+## Open Loop Systems
+
+
+ 
+
