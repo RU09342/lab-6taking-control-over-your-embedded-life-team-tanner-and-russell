@@ -34,7 +34,7 @@ Even with this error, the R2R DAC triangle wave is much more accurate than the P
 
 Various triangle waves were generated throughout this lab as seen above. The control triangle wave was always generated from the function generator to achieve maximum acuracy however, code had to be created for the other two DACs. Since the both DAC codes were created with identical triangle waves combined, a function was created for each DAC to set a desired output based on an 8 bit input. This made the triangle wave generation easy by using two for loops. One for loop counted from 0 to 255, setting a new output voltage based on the current count. The other for loop did the same thing but counted down from 255 to 0. This was then repeated and a triangle wave was generated from each DAC. A Step function was also created by using the same code as a triangle wave but the count was incremenetd by 16 instead of 1 and a delay was added in each loop iteration. By changing the increment value to 16, a notable output voltage change created a step and the delay caused the output to hold that value for a certain duration. The step function can be seen below.
 
-https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/R2R%20Step.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/R2R%20Step.png)
 
 ## FFT
 
