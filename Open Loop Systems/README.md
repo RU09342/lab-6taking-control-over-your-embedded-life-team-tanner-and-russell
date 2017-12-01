@@ -1,27 +1,149 @@
 # Lab 6: Open Loop Systems
 Believe it or not, up to this point, any time that you have wanted to control your LED color or brightness so far, you have been attempting to control an Open Loop System. Basically, when in your code you state that you want a certain brightness or even a duty cycle, you are going on blind faith that the output is actually what it is supposed to be. If something seemed off, you probably went back into the code and tweaked some values. In the case of actual Systems and Control Theory, you are the feedback loop, providing some corrective signal to the system to help obtain a closer output, and we will deal with this in the Milestone. For now, we need to focus on system modeling getting a system to a desirable state. For this lab, you will be attempting to keep a voltage regulator within a specific temperature range using a DC fan which you will have control over. For this part to be a success, you need to figure out what is the minimum fan speed you need to cool off the regulator so that is stays operational.
 
-## Voltage Regulator
-You will need to take a 5V regulator from the back of the lab and drop the output across a 100 ohm power resistor (1 watt should do the trick). The input to the voltage regulator will be between 15-20V. I am giving you a range because when it is dropping a ton of voltage, it may not be able to cool it off enough with just a fan. Most of the voltage regulators in the back will have a tab on the top which we can place a thermistor to. If provided, you can use that tab, or place a through-hole thermistor making contact to the component on your board.
+## Harware Design
 
-## Fan Control
-It will be up to you, the engineer, to decide which method you want to use to control the DC fan. Most of these fans run off of 5V, and as such can not directly be driven by your microcontroller. Depending on the type of fan you use, some can take in a PWM control signal, others will need to have the voltage be modified. Since we are not providing you with any mechanical mounts, you are free to place the fan in whatever orientation you wish, so long as it is safe to operate.
+The hardware design for this system was thought out and planned before any physical
+circuit was made. A MSP430G2553 was used because of its low cost and replacability
+in case it was accidentally damaged. The only required hardware device given to
+complete the system was a fan so the rest of the circuit had to be designed around
+that component. The fan was marked with a part number and average voltage and
+current ratings of 24V and 0.255A. Since the MSP430G2553 can only output a voltage
+of 3.3V and current of 15mA a high power control system had to be implemented.
+Out of the two high power control systems used in previous labs, a NMOS low side
+switch was used due to its extremely low current draw and high max switching speed.
+The fan was connected to 24V and the drain of the NMOS. The source was attached
+to ground and the gate was connected to the P2.1 MSP430G2553 GPIO pin.
 
-## Temperature Reading
-It would be really useful to see what the temperature of your system is so you can determine the performance of your system. This can be done either by displaying the current temperature over a display, passing the information over UART, or other ways as well. Remember that UART is Asynchronous, meaning that you can send information whenever you would like from your controller back to a PC, it doesn't have to be reactionary. If you used MATLAB in Lab 5, you could even plot the temperature over time which could be extremely useful in figuring out whether your system is actually doing something. 
+The next design decision was how to heat up a 5V regulator. It was suggested that
+15v to 20V was input into 5V regulator and a power resistor was attached to the 5V
+output. A decision was made to attach 20V to the 5V regulator to heat it up faster.
+Also, various sized power resistors were tested to determine the best fit for the desired heat up speed. A 27Ω 5W power resistor was used in the final design.
 
+To measure the temperature of the 5V regulator, a temperature sensor had to be
+chosen. The LM35 temperature sensor was used because of its familiarity due to previous
+labs and availability. The LM35 required a minimum supply voltage of 5V and
+output a value of 1◦ C per 10mV. That means the range of 0◦ C to 100◦ C corresponds
+to 0V to 1V which can be easily read through an ADC pin of the MSP430G2553. P1.7
+was used as the ADC pin.
 
-## System Modeling
-For starters, you need to figure out with your fan at MAX what the temperature that the voltage regulator reaches. Your thermistors/PTATs/Whatever else you want to use to measure temperature may not be calibrated, so your results may be consistently off with reality, but for now that is ok. After figuring this out, in increments of about 5C, see what fan speed you need to have to maintain that temperature. Do this until your regulator gets down to about 30C-40C, keeping a record of what your applied Duty Cycles or voltages were. Then using this information, attempt to find a transfer function between the applied input and the resulting temperature to model the system behavior. A simple way to do this is in MATLAB or Excel to plot your applied input on the x-axis, and your steady state temperature on your y-axis and attempt a line fit.
+After all circuit components were decided on, a problem appeared where each component
+needed a different voltage. A total of 4 voltages were needed, 3.3V for the processor, 5V for the temperature sensor, 20V for the 5V regulator and 24V for the
+fan. However, the bench power supplies used for the milestone could only output 3
+different voltages. So in the deepest and darkest hours of the wee night, many pencils
+were broken and brains fried, three dusty old OPA548 $15 power op amps started to shine brighter and brighter as a whisper sang through the air ”use the op amps”.
+The whisper was from none other than the man, the mease, the legend himself Phil Mease. And so the power op amps were used in a non-inverting amplifier fashion to
+boost a 3.3V signal to 5V, 20V and 24V using 0V and 24V as the rails. The power
+issue was solved and Phil Mease rested peacefully that night.
 
-## Open Loop Control System
-You then need to use this information to make a final open loop control system where a user can state what temperature they want the regulator to be maintained at, and the microcontroller will basically calculate/look up what it needs to set the fan to. Do not over complicate this and make it some elaborate system. All this needs to do is some math and set a duty cycle or voltage, and display in some capacity the current temperature of the system as you are measuring it.
+The final circuit used for the milestone after all design considerations were finalized
+can be seen in Figure 4 and 5.
 
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
 
-## Deliverables
-Your README needs to contain schematics of your system, the plot of the plot of the temperature and input voltages at the 5C steps, and a brief talk about why you chose the processor you did along with the control technique for the fan. As always, you should include a brief description of the code you generated to run the experiment. You need to also include information on how to use your control software, including what inputs it is expecting and what range of values you are expecting. At this time you are not going to need to user-proof the system, but you will for the milestone, so keep it in the back of your head.
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
 
-### What your README and code doesn't need
-For starters, note the fact I ask you to do this with only one board. You also do not need to give me all of your code in the README, just tell me functionally what is going on along with showing off any functions you may have made.
+## Software Design
 
-Your code *DOES NOT* need to perform any sort of closed loop control. Save that for the milestone. This means that your system does not need to try to actively change the fan speed without your help. You are going to essentially make your microcontroller one big Convert-o-Box to turn a desired temperature into a controllable signal, and then be able to read a temperature.
+After finishing the hardware, it was time to integrate everything together with software.
+The software consisted of using four basic peripherals: UART, ADC and two Timers.
+UART was used to send and receive temperature data from the user. The ADC was
+used to read temperature data from the LM35. One timer peripheral was used to set
+the sample rate of the ADC. The other timer was used to output a hardware PWM
+signal to control the fan speed. Each peripheral had their own set up function to con-
+figure any necessary parameters to make the system run. The system was then run
+based on interrupts.
+
+When a user sent a desired temperature to the system, the system would read that
+data and act appropriately. Whenever a new temperature was received the code
+would set the correct duty cycle based on a hard coded duty cycle vs temperature
+curve. The curve was decided based on various testing points taken between 0%
+duty cycle and 100% duty cycle in increments of 20%. The data can be seen below
+
+|Fan Duty Cycle | Temperature   |
+|:-------------:|:-------------:|
+| 0%            | 76.7◦C        |
+|20%            | 45.4◦C        |
+|40%            | 31.0◦C        |
+|60%            | 23.5◦C        |
+|80%            | 21.6◦C        |
+|100%           | 19.7◦C        |
+
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+
+The graph shows the line of best fit is an logarithmic function however, this line does
+not fit the points as well as desired. So the data was split up into two linear halves: duty cycles from 0% to 40% and 40% to 100%.
+
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+
+These two linear functions were implemented into code using an if statement to determine which temperature range the input temperature fell within.
+
+```javascript
+void setDutyCycle(int temp){
+    if(temp > 76){
+        setPWM(0);
+    }
+    else if(temp > 31){
+        long pwm = ((temp * -84) / 100) + 63;
+        setPWM(pwm);
+    }
+    else if(temp > 20){
+        long pwm = ((temp * -49) / 10) + 187;
+        setPWM(pwm);
+    }
+    else{
+        setPWM(100);
+    }
+}
+```
+
+This created a baseline for duty cycle values corresponding to specific temperatures.
+The setPWM function changed a capture and compare register for a timer which also
+changed the fan duty cycle.
+
+```javascript
+void setPWM(unsigned int bitDuty){
+    if(bitDuty>100){
+        bitDuty = 100;
+    }
+    bitDuty = bitDuty * 10;
+    TA1CCR1 = bitDuty;
+}
+```
+
+The final piece of the open loop control system was relaying the current temperature
+back to the user. This was done by sampling the ADC at a specific rate and sending
+the current data through UART. The ADC interrupt turned off its own interrupt enable
+and stored the temperatures in buffer of size 10.
+
+```javascript
+void ADC10Interrupt(){
+    ADC10CTL0 &= ~ENC;                        		// ADC10 disabled
+    ADC10CTL0 = 0;                            		// ADC10, Vref disabled completely
+
+    if(tempBuf_index < 10){							//adds new value to array for average of 10
+        tempBuf[tempBuf_index] = ADC10MEM;	
+        tempBuf_index++;
+    }
+    else{											//computes average of 10 and transmits value; resets array index
+        long average = 0;
+        int i = 0;
+        for(i = 0; i < 10 ; i ++){
+            average += tempBuf[i];
+        }
+        average /= 10;
+        long temperature = (average * 330) >> 10;
+        UCA0TXBUF = temperature;
+        tempBuf_index = 0;
+    }
+}
+```
+
+The purpose of turning off the ADC interrupt enable was to set a desired sample rate.
+A timer interrupt was set to fire at a rate of 2Hz and it consisted of re-enabling the
+ADC. The purpose of storing each temperature in a buffer was to minimize error. The
+lower the sample size, the less accurate the data is. So to increase accuracy, a buffer
+of size 10 was filled every 5 seconds and then the average of that data was sent over
+UART. If there was a random undesired spike of temperature, the average would minimize
+its affect on the sent data. This method for sending data provided an accurate
+reading to the user every 5 seconds.
