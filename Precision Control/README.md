@@ -38,11 +38,11 @@ Various triangle waves were generated throughout this lab as seen above. The con
 
 ## Bill of Materials
 
-# R2R Ladder
+### R2R Ladder
 * 1k Ohm resistors
 * 2k Ohm resistors
 
-# Passive Lowpass Filter for PWM
+### Passive Lowpass Filter for PWM
 
 * 3k Ohm resistor 
 * 100 nF capacitor
