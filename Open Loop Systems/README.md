@@ -36,7 +36,7 @@ boost a 3.3V signal to 5V, 20V and 24V using 0V and 24V as the rails. The power
 issue was solved and Phil Mease rested peacefully that night.
 
 The final circuit used for the milestone after all design considerations were finalized
-can be seen in Figures 4 and 5.
+can be seen in the figures below.
 
 ![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Schematic.JPG)
 
