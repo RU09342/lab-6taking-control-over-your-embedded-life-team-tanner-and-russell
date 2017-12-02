@@ -1,10 +1,9 @@
 # Lab 6: Open Loop Systems
-Believe it or not, up to this point, any time that you have wanted to control your LED color or brightness so far, you have been attempting to control an Open Loop System. Basically, when in your code you state that you want a certain brightness or even a duty cycle, you are going on blind faith that the output is actually what it is supposed to be. If something seemed off, you probably went back into the code and tweaked some values. In the case of actual Systems and Control Theory, you are the feedback loop, providing some corrective signal to the system to help obtain a closer output, and we will deal with this in the Milestone. For now, we need to focus on system modeling getting a system to a desirable state. For this lab, you will be attempting to keep a voltage regulator within a specific temperature range using a DC fan which you will have control over. For this part to be a success, you need to figure out what is the minimum fan speed you need to cool off the regulator so that is stays operational.
 
-## Harware Design
+## Hardware Design
 
 The hardware design for this system was thought out and planned before any physical
-circuit was made. A MSP430G2553 was used because of its low cost and replacability
+circuit was made. A MSP430G2553 was used because of its low cost and replaceability
 in case it was accidentally damaged. The only required hardware device given to
 complete the system was a fan so the rest of the circuit had to be designed around
 that component. The fan was marked with a part number and average voltage and
@@ -21,8 +20,8 @@ output. A decision was made to attach 20V to the 5V regulator to heat it up fast
 Also, various sized power resistors were tested to determine the best fit for the desired heat up speed. A 27Ω 5W power resistor was used in the final design.
 
 To measure the temperature of the 5V regulator, a temperature sensor had to be
-chosen. The LM35 temperature sensor was used because of its familiarity due to previous
-labs and availability. The LM35 required a minimum supply voltage of 5V and
+chosen. The LM35 temperature sensor was used because of its familiarity and availability due to use in previous
+labs. The LM35 required a minimum supply voltage of 5V and
 output a value of 1◦ C per 10mV. That means the range of 0◦ C to 100◦ C corresponds
 to 0V to 1V which can be easily read through an ADC pin of the MSP430G2553. P1.7
 was used as the ADC pin.
@@ -37,11 +36,11 @@ boost a 3.3V signal to 5V, 20V and 24V using 0V and 24V as the rails. The power
 issue was solved and Phil Mease rested peacefully that night.
 
 The final circuit used for the milestone after all design considerations were finalized
-can be seen in Figure 4 and 5.
+can be seen in Figures 4 and 5.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Schematic.JPG)
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Circuit.jpg)
 
 ## Software Design
 
@@ -58,7 +57,7 @@ When a user sent a desired temperature to the system, the system would read that
 data and act appropriately. Whenever a new temperature was received the code
 would set the correct duty cycle based on a hard coded duty cycle vs temperature
 curve. The curve was decided based on various testing points taken between 0%
-duty cycle and 100% duty cycle in increments of 20%. The data can be seen below
+duty cycle and 100% duty cycle in increments of 20%. The data can be seen below.
 
 |Fan Duty Cycle | Temperature   |
 |:-------------:|:-------------:|
@@ -69,12 +68,12 @@ duty cycle and 100% duty cycle in increments of 20%. The data can be seen below
 |80%            | 21.6◦C        |
 |100%           | 19.7◦C        |
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Duty%20Cycle%20vs%20Temp.JPG)
 
-The graph shows the line of best fit is an logarithmic function however, this line does
+The graph shows the line of best fit is a logarithmic function however, this line does
 not fit the points as well as desired. So the data was split up into two linear halves: duty cycles from 0% to 40% and 40% to 100%.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Linearized%20Curves.JPG)
 
 These two linear functions were implemented into code using an if statement to determine which temperature range the input temperature fell within.
 
@@ -114,7 +113,7 @@ void setPWM(unsigned int bitDuty){
 The final piece of the open loop control system was relaying the current temperature
 back to the user. This was done by sampling the ADC at a specific rate and sending
 the current data through UART. The ADC interrupt turned off its own interrupt enable
-and stored the temperatures in buffer of size 10.
+and stored the temperatures in a buffer of size 10.
 
 ```javascript
 void ADC10Interrupt(){
