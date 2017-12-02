@@ -1,5 +1,9 @@
 # Lab 6: Open Loop Systems
-Believe it or not, up to this point, any time that you have wanted to control your LED color or brightness so far, you have been attempting to control an Open Loop System. Basically, when in your code you state that you want a certain brightness or even a duty cycle, you are going on blind faith that the output is actually what it is supposed to be. If something seemed off, you probably went back into the code and tweaked some values. In the case of actual Systems and Control Theory, you are the feedback loop, providing some corrective signal to the system to help obtain a closer output, and we will deal with this in the Milestone. For now, we need to focus on system modeling getting a system to a desirable state. For this lab, you will be attempting to keep a voltage regulator within a specific temperature range using a DC fan which you will have control over. For this part to be a success, you need to figure out what is the minimum fan speed you need to cool off the regulator so that is stays operational.
+
+Open loop systems are systems that do not take in feedback. Open loop is useful when a system does not need to react to changes within the outside environment. This part of the lab aims to introduce open loop systems by controlling the temperature of a 5V regulator using a fan controlled my a microprocessor. Many different variables had to be taken into account when designing this system. All hardware and software considerations are explained in detail below.
+
+![alt text](
+https://github.com/RU09342/milestone-2-closed-loop-controls-kool-kats/blob/master/Pics/temp58-40.gif)
 
 ## Harware Design
 
@@ -39,9 +43,9 @@ issue was solved and Phil Mease rested peacefully that night.
 The final circuit used for the milestone after all design considerations were finalized
 can be seen in Figure 4 and 5.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Schematic.JPG)
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Circuit.jpg)
 
 ## Software Design
 
@@ -69,12 +73,12 @@ duty cycle and 100% duty cycle in increments of 20%. The data can be seen below
 |80%            | 21.6◦C        |
 |100%           | 19.7◦C        |
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Duty%20Cycle%20vs%20Temp.JPG)
 
 The graph shows the line of best fit is an logarithmic function however, this line does
 not fit the points as well as desired. So the data was split up into two linear halves: duty cycles from 0% to 40% and 40% to 100%.
 
-![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Precision%20Control/Oscilloscope%20Screen%20Shots/PWM%20Triangle%20Wave.png)
+![alt text](https://github.com/RU09342/lab-6taking-control-over-your-embedded-life-team-tanner-and-russell/blob/master/Open%20Loop%20Systems/pics/Linearized%20Curves.JPG)
 
 These two linear functions were implemented into code using an if statement to determine which temperature range the input temperature fell within.
 
